@@ -2,11 +2,9 @@ import { getAuthUserId } from "@convex-dev/auth/server";
 import {
   internalMutation,
   internalQuery,
-  mutation,
   query,
 } from "./_generated/server";
 import { v } from "convex/values";
-import { internal } from "./_generated/api";
 
 export const getUserById = internalQuery({
   args: { userId: v.id("users") },
