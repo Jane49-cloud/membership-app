@@ -1,5 +1,7 @@
 # MemberKit
 
+**Live:** https://membership-app-bae3.vercel.app
+
 A membership app I built with Convex, Stripe, and React. Users sign in with GitHub, can upgrade to PRO via Stripe Checkout, and PRO members get access to gated content. There's also a basic admin view for payments.
 
 **Stack:** React · Vite · Convex · Convex Auth · Stripe · Resend · TypeScript · Vitest
