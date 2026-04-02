@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "npx convex deploy --cmd 'tsc && vite build'",
+    "build": "npx convex ai-files disable && npx convex deploy --cmd 'tsc && vite build'",
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
