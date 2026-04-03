@@ -8,7 +8,9 @@ interface AdminGuardProps {
 export default function AdminGuard({ role, children }: AdminGuardProps) {
   if (role === undefined) {
     return (
-      <div style={{ display: "flex", justifyContent: "center", padding: "60px" }}>
+      <div
+        style={{ display: "flex", justifyContent: "center", padding: "60px" }}
+      >
         <div className="spinner" />
       </div>
     );
@@ -19,7 +21,14 @@ export default function AdminGuard({ role, children }: AdminGuardProps) {
   if (role === "ADMIN") return <>{children}</>;
 
   return (
-    <div style={{ textAlign: "center", padding: "80px 24px", maxWidth: "480px", margin: "0 auto" }}>
+    <div
+      style={{
+        textAlign: "center",
+        padding: "80px 24px",
+        maxWidth: "480px",
+        margin: "0 auto",
+      }}
+    >
       <div
         style={{
           width: "64px",
@@ -41,9 +50,12 @@ export default function AdminGuard({ role, children }: AdminGuardProps) {
         Access denied
       </h2>
 
-      <p className="text-secondary" style={{ lineHeight: 1.7, marginBottom: "24px", fontSize: "0.95rem" }}>
-        This page is for admin users only. If you believe you should have access,
-        ask an admin to update your account role.
+      <p
+        className="text-secondary"
+        style={{ lineHeight: 1.7, marginBottom: "24px", fontSize: "0.95rem" }}
+      >
+        This page is for admin users only. If you believe you should have
+        access, ask an admin to update your account role.
       </p>
 
       <Link to="/billing" className="btn btn-primary">

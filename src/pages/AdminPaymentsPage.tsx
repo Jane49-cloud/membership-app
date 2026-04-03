@@ -8,7 +8,9 @@ function AdminPaymentsSummary() {
 
   if (data === undefined) {
     return (
-      <div style={{ display: "flex", justifyContent: "center", padding: "60px" }}>
+      <div
+        style={{ display: "flex", justifyContent: "center", padding: "60px" }}
+      >
         <div className="spinner" />
       </div>
     );
@@ -63,7 +65,9 @@ function AdminPaymentsSummary() {
                 <tr key={row.userId}>
                   <td>
                     <div>
-                      <p style={{ fontWeight: 600, fontSize: "0.9rem" }}>{row.name}</p>
+                      <p style={{ fontWeight: 600, fontSize: "0.9rem" }}>
+                        {row.name}
+                      </p>
                       <p className="text-muted text-xs">{row.email}</p>
                     </div>
                   </td>
@@ -87,13 +91,18 @@ function AdminPaymentsSummary() {
                   </td>
                   <td style={{ fontWeight: 600, fontSize: "0.9rem" }}>
                     {row.lastPaymentAmount != null ? (
-                      formatCurrency(row.lastPaymentAmount, row.lastPaymentCurrency ?? "usd")
+                      formatCurrency(
+                        row.lastPaymentAmount,
+                        row.lastPaymentCurrency ?? "usd",
+                      )
                     ) : (
                       <span className="text-muted">—</span>
                     )}
                   </td>
                   <td className="text-secondary text-sm">
-                    {row.lastPaymentDate ? formatDate(row.lastPaymentDate) : "—"}
+                    {row.lastPaymentDate
+                      ? formatDate(row.lastPaymentDate)
+                      : "—"}
                   </td>
                 </tr>
               ))}
@@ -110,7 +119,9 @@ export default function AdminPaymentsPage() {
 
   if (user === undefined) {
     return (
-      <div style={{ display: "flex", justifyContent: "center", padding: "60px" }}>
+      <div
+        style={{ display: "flex", justifyContent: "center", padding: "60px" }}
+      >
         <div className="spinner" />
       </div>
     );
@@ -118,7 +129,13 @@ export default function AdminPaymentsPage() {
 
   if (user === null) {
     return (
-      <div style={{ textAlign: "center", padding: "80px 24px", color: "var(--text-muted)" }}>
+      <div
+        style={{
+          textAlign: "center",
+          padding: "80px 24px",
+          color: "var(--text-muted)",
+        }}
+      >
         <p>Could not load your account. Please refresh.</p>
       </div>
     );
