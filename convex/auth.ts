@@ -68,3 +68,17 @@ export const makeAdmin = internalMutation({
     return { success: true };
   },
 });
+
+export const removeAdmin = internalMutation({
+  args: { email: v.string() },
+  handler: async (ctx, { email }) => {
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_email", (q) => q.eq("email", email))
+      .unique();
+
+    if (!user) throw new Error(`No user found with email: ${email}`);
+    await ctx.db.patch(user._id, { role: "USER" });
+    return { success: true };
+  },
+});

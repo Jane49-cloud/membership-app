@@ -82,10 +82,16 @@ Then open [http://localhost:5173](http://localhost:5173).
 
 ### 7. Make yourself an admin
 
-Sign in first, then run this from the Convex dashboard (Functions panel):
+Sign in first so your account exists, then run from the terminal:
 
+```bash
+npx convex run auth:makeAdmin '{"email":"your@email.com"}'
 ```
-makeAdmin({ email: "your@email.com" })
+
+`makeAdmin` is an internal server-only function — it cannot be called from the browser. To revoke admin access:
+
+```bash
+npx convex run auth:removeAdmin '{"email":"their@email.com"}'
 ```
 
 ---
@@ -101,6 +107,7 @@ Tests live in `src/tests/`:
 
 - `webhook.test.ts` — signature verification, duplicate event handling, plan upgrade logic
 - `proGuard.test.tsx` — access control for FREE vs PRO users
+- `adminGuard.test.tsx` — access control for USER vs ADMIN roles
 
 ---
 
@@ -120,6 +127,7 @@ src/
     Layout.tsx       # nav + page wrapper
     PlanBadge.tsx    # FREE / PRO badge
     ProGuard.tsx     # blocks non-PRO users
+    AdminGuard.tsx   # blocks non-ADMIN users
   pages/
     LoginPage.tsx         # GitHub sign-in
     BillingPage.tsx       # plan info + upgrade + payment history
@@ -131,6 +139,7 @@ src/
     setup.ts
     webhook.test.ts
     proGuard.test.tsx
+    adminGuard.test.tsx
 ```
 
 ---
@@ -154,7 +163,7 @@ Because Convex queries are reactive, the billing page and nav badge update the m
 - PRO access control (ProGuard)
 - Admin payments table (role-gated)
 - Optional Resend confirmation email
-- 11 passing tests
+- 15 passing tests
 
 ## What I'd add next
 
