@@ -1,9 +1,18 @@
 import { useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import { formatDate, formatCurrency } from "@/lib/utils";
+import AdminGuard from "@/components/AdminGuard";
 
-export default function AdminPaymentsPage() {
+function AdminPaymentsSummary() {
   const data = useQuery(api.payments.getAdminPaymentSummary);
+
+  if (data === undefined) {
+    return (
+      <div style={{ display: "flex", justifyContent: "center", padding: "60px" }}>
+        <div className="spinner" />
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -23,25 +32,17 @@ export default function AdminPaymentsPage() {
             All members and their latest payment status.
           </p>
         </div>
-        {data && (
-          <div style={{ display: "flex", gap: "12px" }}>
-            <Stat label="Total Members" value={data.length} />
-            <Stat
-              label="PRO Members"
-              value={data.filter((r) => r.plan === "PRO").length}
-              color="var(--green)"
-            />
-          </div>
-        )}
+        <div style={{ display: "flex", gap: "12px" }}>
+          <Stat label="Total Members" value={data.length} />
+          <Stat
+            label="PRO Members"
+            value={data.filter((r) => r.plan === "PRO").length}
+            color="var(--green)"
+          />
+        </div>
       </div>
 
-      {data === undefined ? (
-        <div
-          style={{ display: "flex", justifyContent: "center", padding: "60px" }}
-        >
-          <div className="spinner" />
-        </div>
-      ) : data.length === 0 ? (
+      {data.length === 0 ? (
         <div className="card" style={{ textAlign: "center", padding: "60px" }}>
           <p className="text-muted">No members yet.</p>
         </div>
@@ -62,9 +63,7 @@ export default function AdminPaymentsPage() {
                 <tr key={row.userId}>
                   <td>
                     <div>
-                      <p style={{ fontWeight: 600, fontSize: "0.9rem" }}>
-                        {row.name}
-                      </p>
+                      <p style={{ fontWeight: 600, fontSize: "0.9rem" }}>{row.name}</p>
                       <p className="text-muted text-xs">{row.email}</p>
                     </div>
                   </td>
@@ -88,18 +87,13 @@ export default function AdminPaymentsPage() {
                   </td>
                   <td style={{ fontWeight: 600, fontSize: "0.9rem" }}>
                     {row.lastPaymentAmount != null ? (
-                      formatCurrency(
-                        row.lastPaymentAmount,
-                        row.lastPaymentCurrency ?? "usd",
-                      )
+                      formatCurrency(row.lastPaymentAmount, row.lastPaymentCurrency ?? "usd")
                     ) : (
                       <span className="text-muted">—</span>
                     )}
                   </td>
                   <td className="text-secondary text-sm">
-                    {row.lastPaymentDate
-                      ? formatDate(row.lastPaymentDate)
-                      : "—"}
+                    {row.lastPaymentDate ? formatDate(row.lastPaymentDate) : "—"}
                   </td>
                 </tr>
               ))}
@@ -108,6 +102,32 @@ export default function AdminPaymentsPage() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function AdminPaymentsPage() {
+  const user = useQuery(api.auth.getCurrentUser);
+
+  if (user === undefined) {
+    return (
+      <div style={{ display: "flex", justifyContent: "center", padding: "60px" }}>
+        <div className="spinner" />
+      </div>
+    );
+  }
+
+  if (user === null) {
+    return (
+      <div style={{ textAlign: "center", padding: "80px 24px", color: "var(--text-muted)" }}>
+        <p>Could not load your account. Please refresh.</p>
+      </div>
+    );
+  }
+
+  return (
+    <AdminGuard role={user.role}>
+      <AdminPaymentsSummary />
+    </AdminGuard>
   );
 }
 

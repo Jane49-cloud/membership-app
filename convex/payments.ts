@@ -79,29 +79,30 @@ export const getAdminPaymentSummary = query({
 
     const users = await ctx.db.query("users").collect();
 
-    const summary = await Promise.all(
-      users.map(async (user) => {
-        const payments = await ctx.db
-          .query("payments")
-          .withIndex("by_user", (q) => q.eq("userId", user._id))
-          .order("desc")
-          .take(1);
+    // Fetch all payments in one query, then group in memory — avoids N+1.
+    const allPayments = await ctx.db.query("payments").collect();
+    const lastPaymentByUser = new Map<string, (typeof allPayments)[0]>();
+    for (const payment of allPayments) {
+      const existing = lastPaymentByUser.get(payment.userId);
+      if (!existing || payment.createdAt > existing.createdAt) {
+        lastPaymentByUser.set(payment.userId, payment);
+      }
+    }
 
-        const lastPayment = payments[0] ?? null;
-
-        return {
-          userId: user._id,
-          email: user.email,
-          name: user.name ?? "Unknown",
-          plan: user.plan,
-          role: user.role,
-          lastPaymentStatus: lastPayment?.status ?? null,
-          lastPaymentDate: lastPayment?.createdAt ?? null,
-          lastPaymentAmount: lastPayment?.amount ?? null,
-          lastPaymentCurrency: lastPayment?.currency ?? null,
-        };
-      }),
-    );
+    const summary = users.map((user) => {
+      const lastPayment = lastPaymentByUser.get(user._id) ?? null;
+      return {
+        userId: user._id,
+        email: user.email,
+        name: user.name ?? "Unknown",
+        plan: user.plan,
+        role: user.role,
+        lastPaymentStatus: lastPayment?.status ?? null,
+        lastPaymentDate: lastPayment?.createdAt ?? null,
+        lastPaymentAmount: lastPayment?.amount ?? null,
+        lastPaymentCurrency: lastPayment?.currency ?? null,
+      };
+    });
 
     return summary;
   },

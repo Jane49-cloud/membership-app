@@ -1,6 +1,6 @@
 import { convexAuth, getAuthUserId } from "@convex-dev/auth/server";
 import GitHub from "@auth/core/providers/github";
-import { mutation, query } from "./_generated/server";
+import { internalMutation, query } from "./_generated/server";
 import { v } from "convex/values";
 
 export const { auth, signIn, signOut, store } = convexAuth({
@@ -55,7 +55,7 @@ export const getCurrentUser = query({
   },
 });
 
-export const makeAdmin = mutation({
+export const makeAdmin = internalMutation({
   args: { email: v.string() },
   handler: async (ctx, { email }) => {
     const user = await ctx.db
